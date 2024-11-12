@@ -98,15 +98,19 @@ const requestLeave = async (req, res) => {
   }
 
   try {
+    console.log("insidetry");
     const newLeave = new Leave({
       eventName,
       startDate,
       endDate,
+      name: user.name,
+      rollNumber: user.rollNumber,
       studentId: user._id,
-      certificate: file.path,
+      certificate: file ? file.path : null,
     });
 
     await newLeave.save();
+    console.log(newLeave);
     // !! TODO : Send email to user
 
     return res
@@ -134,6 +138,7 @@ const approveLeave = async (req, res) => {
   const user = req.user;
   const { leaveId, status } = req.body;
 
+  console.log(leaveId, status);
   if (!leaveId || !status) {
     return res
       .status(400)

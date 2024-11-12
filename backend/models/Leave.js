@@ -10,6 +10,8 @@ const LeaveSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    name: { type: String, required: true },
+    rollNumber: { type: String, required: true },
     status: { type: String, default: "Pending" },
     certificate: { type: String, default: false },
   },
