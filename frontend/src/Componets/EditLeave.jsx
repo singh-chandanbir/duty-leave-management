@@ -1,29 +1,33 @@
 import { toast } from "react-toastify";
 import { collectionId, databaceId, database } from "../Appwrite/config";
 import { useState } from "react";
+import PropTypes from "prop-types";
 
-const EditLeave = (leave) => {
-  const [status, setStatus] = useState(leave.leave.status);
+const EditLeave = ({ leave }) => {
+  console.log("leave");
+  console.log(leave);
+  const [status, setStatus] = useState(leave.status);
   const handelSubmit = async () => {
     try {
-      console.log(leave.leave.$id);
+      console.log("leave.$id", leave.$id);
+      console.log("leave.eventName", leave.eventName);
       const result = await database.updateDocument(
         databaceId,
         collectionId,
-        leave.leave.$id,
+        leave.$id,
         { status: status },
       );
+      console.log(result.eventName);
       toast.success("Status Updated Successfully");
       document.getElementById("closeBTN").click();
-
       const res = fetch(import.meta.env.VITE_APP_EMAIL_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          message: `Leave ${status}ed with id ${leave.leave.$id}  ${leave.leave.eventName} from ${leave.leave.startDate} to ${leave.leave.endDate} is ${status}. Please check the dashboard for more details`,
-          receiverEmail: leave.leave.email,
+          message: `Leave ${status}ed with id ${leave.$id}  ${leave.eventName} from ${leave.startDate} to ${leave.endDate} is ${status}. Please check the dashboard for more details`,
+          receiverEmail: leave.userId,
         }),
       });
       console.log("res", res);
@@ -38,18 +42,20 @@ const EditLeave = (leave) => {
     <>
       <button
         className="btn"
-        onClick={() => document.getElementById("my_modal_4").showModal()}
+        onClick={() =>
+          document.getElementById(`my_modal_4${leave.$id}`).showModal()
+        }
       >
         Update Status
       </button>
-      <dialog id="my_modal_4" className="modal">
+      <dialog id={`my_modal_4${leave.$id}`} className="modal">
         <div className="modal-box w-11/12 max-w-5xl">
           <div className="flex flex-col gap-4">
             <label className="input input-bordered flex items-center gap-2">
               Student Name
               <input
                 type="text"
-                placeholder={leave.leave.name}
+                placeholder={leave.name}
                 className="input input-bordered w-full max-w-xs"
                 disabled
               />{" "}
@@ -58,7 +64,7 @@ const EditLeave = (leave) => {
               Event Name
               <input
                 type="text"
-                placeholder={leave.leave.eventName}
+                placeholder={leave.eventName}
                 className="input input-bordered w-full max-w-xs"
                 disabled
               />
@@ -68,7 +74,7 @@ const EditLeave = (leave) => {
                 Start Date
                 <input
                   type="text"
-                  placeholder={leave.leave.startDate}
+                  placeholder={leave.startDate}
                   className="input input-bordered w-full max-w-xs"
                   disabled
                 />
@@ -77,7 +83,7 @@ const EditLeave = (leave) => {
                 End Date
                 <input
                   type="text"
-                  placeholder={leave.leave.endDate}
+                  placeholder={leave.endDate}
                   className="input input-bordered w-full max-w-xs"
                   disabled
                 />
@@ -110,6 +116,17 @@ const EditLeave = (leave) => {
       </dialog>
     </>
   );
+};
+EditLeave.propTypes = {
+  leave: PropTypes.shape({
+    $id: PropTypes.string.isRequired,
+    status: PropTypes.string.isRequired,
+    eventName: PropTypes.string.isRequired,
+    userId: PropTypes.string.isRequired,
+    startDate: PropTypes.string.isRequired,
+    endDate: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 export default EditLeave;

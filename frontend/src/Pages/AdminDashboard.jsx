@@ -42,7 +42,7 @@ const AdminDashboard = () => {
               <tbody>
                 {/* row 1 */}
                 {data.map((leave, index) => (
-                  <tr key={leave._id}>
+                  <tr key={leave.$id}>
                     <th>{index + 1}</th>
                     <td>{leave.name}</td>
                     <td>{leave.rollNumber}</td>

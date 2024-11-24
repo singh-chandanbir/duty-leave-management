@@ -39,7 +39,7 @@ const AddLeaveModel = () => {
           name: user.name,
           rollNumber: roll,
           certificate: fileUrl,
-          userId: user.$id,
+          userId: user.email,
         },
       );
 
