@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../Context/AuthContext";
 import { toast } from "react-toastify";
 import { Navigate } from "react-router-dom";
@@ -8,17 +8,6 @@ const Signup = () => {
   const { user } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const user = await account.get();
-      } catch (e) {
-        console.log(e);
-      }
-      console.log(user);
-    }
-    fetchData();
-  }, []);
   if (user) {
     return <Navigate to="/dashboard" />;
   }

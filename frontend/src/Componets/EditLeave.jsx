@@ -1,8 +1,6 @@
-import { useContext, useState } from "react";
-import { BackendURL } from "../Constants";
-import { AuthContext } from "../Context/AuthContext";
 import { toast } from "react-toastify";
 import { collectionId, databaceId, database } from "../Appwrite/config";
+import { useState } from "react";
 
 const EditLeave = (leave) => {
   const [status, setStatus] = useState(leave.leave.status);

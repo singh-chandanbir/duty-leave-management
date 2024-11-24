@@ -3,7 +3,7 @@ import Loader from "../Componets/Loader";
 import AddLeaveModel from "../Componets/AddLeaveModel";
 import { collectionId, databaceId, database, Query } from "../Appwrite/config";
 import { AuthContext } from "../Context/AuthContext";
-// import { Navigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 const Dashboard = () => {
   const { user } = useContext(AuthContext);
@@ -18,9 +18,9 @@ const Dashboard = () => {
     };
     fetchData();
   }, []);
-  // if (user.labels[0] === "admin") {
-  //   return <Navigate to="/admin-dashboard" />;
-  // }
+  if (user.labels[0] === "admin") {
+    return <Navigate to="/admin-dashboard" />;
+  }
 
   return (
     <div className="flex flex-col justify-start items-center min-h-[85vh]">
