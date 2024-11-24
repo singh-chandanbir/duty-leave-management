@@ -1,37 +1,69 @@
 import { useContext, useState } from "react";
-import { BackendURL } from "../Constants";
 import { toast } from "react-toastify";
+import {
+  storage,
+  ID,
+  bucketId,
+  database,
+  databaceId,
+  collectionId,
+} from "../Appwrite/config";
 import { AuthContext } from "../Context/AuthContext";
+import { rollNumber } from "../Utils/rollnumber";
 
 const AddLeaveModel = () => {
-  const { token } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const [eventName, setEventName] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [file, setFile] = useState("");
+  const [fileUrl, setFileUrl] = useState("");
   const handelSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("eventName", eventName);
-    formData.append("startDate", startDate);
-    formData.append("endDate", endDate);
-    formData.append("file", file);
 
-    const response = await fetch(BackendURL + "/request-leave", {
-      method: "POST",
-      body: formData,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    try {
+      const response = await storage.createFile(bucketId, ID.unique(), file);
+      await setFileUrl(response["$id"]);
 
-    const jsonRes = await response.json();
+      const roll = await rollNumber(user.email);
+      console.log(roll);
 
-    if (jsonRes.success === false) {
-      toast.error(jsonRes.message);
-    } else {
+      const leave = await database.createDocument(
+        databaceId,
+        collectionId,
+        ID.unique(),
+        {
+          eventName: eventName,
+          startDate: startDate,
+          endDate: endDate,
+          name: user.name,
+          rollNumber: roll,
+          certificate: fileUrl,
+          userId: user.$id,
+        },
+      );
+
+      console.log(leave);
       toast.success("Leave Requested Successfully");
+
       document.getElementById("closeBTN").click();
+      console.log(import.meta.env.VITE_APP_EMAIL_URL);
+      const res = await fetch(import.meta.env.VITE_APP_EMAIL_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: `Leave Requested with id ${leave.$id}  ${eventName} from ${startDate} to ${endDate} is pending for approval. Please check the dashboard for more details`,
+          receiverEmail: user.email,
+        }),
+      });
+      const data = await res.json();
+
+      console.log(data);
+    } catch (error) {
+      toast.error("Failed to Request Leave, All fields are required");
+      console.error(error);
     }
   };
 

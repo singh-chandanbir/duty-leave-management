@@ -1,13 +1,24 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../Context/AuthContext";
 import { toast } from "react-toastify";
 import { Navigate } from "react-router-dom";
-import { account } from "../Appwrite/config";
+import { account, ID } from "../Appwrite/config.js";
 
-const Login = () => {
-  const { user, setUser } = useContext(AuthContext);
+const Signup = () => {
+  const { user } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const user = await account.get();
+      } catch (e) {
+        console.log(e);
+      }
+      console.log(user);
+    }
+    fetchData();
+  }, []);
   if (user) {
     return <Navigate to="/dashboard" />;
   }
@@ -15,25 +26,23 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await account.createEmailPasswordSession(
-        email,
-        password,
-      );
-      console.log(response);
-      setUser(response);
-      toast.success("Login Successful");
-      <Navigate to="/dashboard" />;
-    } catch (err) {
-      console.log(err);
-      toast.error("Login Failed" + err.message);
+      await account.create(ID.unique(), email, password);
+      toast.success("Account created successfully! Please verify your email.");
+      await account.createEmailPasswordSession(email, password);
+      await account.createVerification("http://localhost:5173/verify");
+    } catch (error) {
+      console.log(error);
     }
+
+    // navigate to the dashboard
+    <Navigate to="/dashboard" />;
   };
+
   return (
     <div className="hero bg-base-200 min-h-[85vh]">
-      {/* <div className="hero-content flex-col lg:flex-row-reverse"> */}
       <div className="hero-content min-w-[90%] flex flex-col">
         <div className="text-center min-w-[80%] lg:text-left">
-          <h1 className="text-5xl text-center font-bold">Login now!</h1>
+          <h1 className="text-5xl text-center font-bold">Sign up here </h1>
         </div>
         <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
           <form className="card-body">
@@ -78,4 +87,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Signup;

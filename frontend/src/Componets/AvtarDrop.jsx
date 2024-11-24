@@ -2,12 +2,13 @@ import { useContext } from "react";
 import { AuthContext } from "../Context/AuthContext";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
+import { account } from "../Appwrite/config";
 
 const AvtarDrop = () => {
-  const { removeUser, removeToken, user } = useContext(AuthContext);
-  const handleLogout = () => {
+  const { removeUser, user } = useContext(AuthContext);
+  const handleLogout = async () => {
+    await account.deleteSession("current");
     removeUser();
-    removeToken();
     window.location.href = "/";
     toast.success("Logout Successful");
   };

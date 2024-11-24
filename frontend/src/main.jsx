@@ -13,12 +13,16 @@ import Login from "./Pages/Login.jsx";
 import Dashboard from "./Pages/Dashboard.jsx";
 import { PrivateRoute } from "./Utils/PrivateRoute.jsx";
 import AdminDashboard from "./Pages/AdminDashboard.jsx";
+import Signup from "./Pages/Signup.jsx";
+import VerifyEmail from "./Pages/EmailVerify.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
       <Route index element={<Landing />} />
       <Route path="login/" element={<Login />} />
+      <Route path="signup/" element={<Signup />} />
+      <Route path="verify/" element={<VerifyEmail />} />
       <Route path="dashboard/" element={<PrivateRoute />}>
         <Route index element={<Dashboard />}></Route>
       </Route>

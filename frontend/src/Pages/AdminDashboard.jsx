@@ -2,27 +2,23 @@ import { Navigate } from "react-router-dom";
 import { AuthContext } from "../Context/AuthContext";
 import { useContext, useEffect, useState } from "react";
 import Loader from "../Componets/Loader";
-import { BackendURL } from "../Constants";
 import EditLeave from "../Componets/EditLeave";
+import { collectionId, databaceId, database } from "../Appwrite/config";
 
 const AdminDashboard = () => {
-  const { user, token } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const [data, setData] = useState(null);
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fetch(BackendURL + "/get-all-leaves", {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const jsonRes = await res.json();
-      setData(jsonRes.leaves);
+      const leave = await database.listDocuments(databaceId, collectionId, []);
+      setData(leave.documents);
+      console.log(leave);
     };
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  if (user.type === "Student") {
+  // TODO : remove this after testing
+  if (user.labels[0] !== "admin") {
     return <Navigate to="/dashboard" />;
   }
   return (

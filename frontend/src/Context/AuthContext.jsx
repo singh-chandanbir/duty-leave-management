@@ -1,5 +1,6 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import { account } from "../Appwrite/config";
 
 const AuthContext = createContext();
 
@@ -10,14 +11,16 @@ export const AuthProvider = ({ children }) => {
     JSON.parse(localStorage.getItem("user")) || null,
   );
 
-  const [token, setTokenState] = useState(
-    JSON.parse(localStorage.getItem("token")) || null,
-  );
-
-  const setToken = (token) => {
-    localStorage.setItem("token", JSON.stringify(token));
-    setTokenState(token);
+  const reloadUser = async () => {
+    const result = await account.get();
+    console.log("result");
+    setUserState(result);
   };
+
+  useEffect(() => {
+    reloadUser();
+  }, []);
+
   const setUser = (user) => {
     localStorage.setItem("user", JSON.stringify(user));
     setUserState(user);
@@ -30,10 +33,8 @@ export const AuthProvider = ({ children }) => {
 
   const data = {
     user,
-    token,
     setUser,
     removeUser,
-    setToken,
   };
 
   return <AuthContext.Provider value={data}>{children}</AuthContext.Provider>;

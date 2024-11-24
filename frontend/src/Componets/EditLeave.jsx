@@ -2,27 +2,37 @@ import { useContext, useState } from "react";
 import { BackendURL } from "../Constants";
 import { AuthContext } from "../Context/AuthContext";
 import { toast } from "react-toastify";
+import { collectionId, databaceId, database } from "../Appwrite/config";
 
 const EditLeave = (leave) => {
   const [status, setStatus] = useState(leave.leave.status);
-  const { token } = useContext(AuthContext);
   const handelSubmit = async () => {
-    const response = await fetch(BackendURL + "/approve-leave", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ leaveId: leave.leave._id, status: status }),
-    });
-
-    const jsonRes = await response.json();
-
-    if (jsonRes.success === false) {
-      toast.error(jsonRes.message);
-    } else {
-      toast.success("Leave Updated Successfully");
+    try {
+      console.log(leave.leave.$id);
+      const result = await database.updateDocument(
+        databaceId,
+        collectionId,
+        leave.leave.$id,
+        { status: status },
+      );
+      toast.success("Status Updated Successfully");
       document.getElementById("closeBTN").click();
+
+      const res = fetch(import.meta.env.VITE_APP_EMAIL_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: `Leave ${status}ed with id ${leave.leave.$id}  ${leave.leave.eventName} from ${leave.leave.startDate} to ${leave.leave.endDate} is ${status}. Please check the dashboard for more details`,
+          receiverEmail: leave.leave.email,
+        }),
+      });
+      console.log("res", res);
+
+      console.log("result", result);
+    } catch (error) {
+      console.log(error);
     }
   };
 

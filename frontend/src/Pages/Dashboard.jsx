@@ -1,29 +1,26 @@
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../Context/AuthContext";
-import { Navigate } from "react-router-dom";
 import Loader from "../Componets/Loader";
-import { BackendURL } from "../Constants";
 import AddLeaveModel from "../Componets/AddLeaveModel";
+import { collectionId, databaceId, database, Query } from "../Appwrite/config";
+import { AuthContext } from "../Context/AuthContext";
+// import { Navigate } from "react-router-dom";
 
 const Dashboard = () => {
-  const { user, token } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const [data, setData] = useState(null);
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fetch(BackendURL + "/leaves", {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const jsonRes = await res.json();
-      setData(jsonRes.leaves);
+      const leave = await database.listDocuments(databaceId, collectionId, [
+        Query.equal("userId", user.$id),
+      ]);
+      setData(leave.documents);
+      console.log(leave);
     };
     fetchData();
   }, []);
-  if (user.type === "Faculty") {
-    return <Navigate to="/admin-dashboard" />;
-  }
+  // if (user.labels[0] === "admin") {
+  //   return <Navigate to="/admin-dashboard" />;
+  // }
 
   return (
     <div className="flex flex-col justify-start items-center min-h-[85vh]">
@@ -44,6 +41,7 @@ const Dashboard = () => {
                     <th>Status</th>
                     <th>Start Date</th>
                     <th>End Date</th>
+                    <th>Doc</th>
                   </tr>
                 </thead>
                 <tbody>
