@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const Footer = () => {
   return (
     <footer className="footer footer-center bg-base-300 text-base-content p-4">
@@ -7,6 +9,7 @@ const Footer = () => {
           Nanak Dev Engineering College
         </p>
       </aside>
+      <Link to="/admin-dashboard">Admin Dashboard</Link>
     </footer>
   );
 };

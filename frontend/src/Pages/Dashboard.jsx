@@ -11,16 +11,17 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       const leave = await database.listDocuments(databaceId, collectionId, [
-        Query.equal("userId", user.$id),
+        Query.equal("userId", user.email),
       ]);
       setData(leave.documents);
+      console.log("leave");
       console.log(leave);
     };
     fetchData();
   }, []);
-  if (user.labels[0] === "admin") {
-    return <Navigate to="/admin-dashboard" />;
-  }
+  // if (user.labels[0] === "admin") {
+  //   return <Navigate to="/admin-dashboard" />;
+  // }
 
   return (
     <div className="flex flex-col justify-start items-center min-h-[85vh]">

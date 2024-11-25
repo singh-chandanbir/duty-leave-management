@@ -16,9 +16,14 @@ const Navbar = () => {
         {user ? (
           <AvtarDrop />
         ) : (
-          <Link to="/login" className="btn btn-ghost">
-            Login
-          </Link>
+          <>
+            <Link to="/login" className="btn btn-ghost">
+              Login
+            </Link>
+            <Link to="/signup" className="btn btn-ghost">
+              Sign In
+            </Link>
+          </>
         )}
       </div>
     </div>

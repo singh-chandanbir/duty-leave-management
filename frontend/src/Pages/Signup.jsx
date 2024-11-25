@@ -66,7 +66,7 @@ const Signup = () => {
             </div>
             <div className="form-control mt-6">
               <button onClick={handleSubmit} className="btn btn-primary">
-                Login
+                Sign up
               </button>
             </div>
           </form>

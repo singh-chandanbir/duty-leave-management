@@ -1,12 +1,12 @@
-import { Navigate } from "react-router-dom";
-import { AuthContext } from "../Context/AuthContext";
+// import { Navigate } from "react-router-dom";
+// import { AuthContext } from "../Context/AuthContext";
 import { useContext, useEffect, useState } from "react";
 import Loader from "../Componets/Loader";
 import EditLeave from "../Componets/EditLeave";
 import { collectionId, databaceId, database } from "../Appwrite/config";
 
 const AdminDashboard = () => {
-  const { user } = useContext(AuthContext);
+  // const { user } = useContext(AuthContext);
   const [data, setData] = useState(null);
   useEffect(() => {
     const fetchData = async () => {
@@ -18,9 +18,9 @@ const AdminDashboard = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   // TODO : remove this after testing
-  if (user.labels[0] !== "admin") {
-    return <Navigate to="/dashboard" />;
-  }
+  // if (user.labels[0] !== "admin") {
+  //   return <Navigate to="/dashboard" />;
+  // }
   return (
     <div>
       {data ? (
