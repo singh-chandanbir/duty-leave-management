@@ -1,15 +1,21 @@
 import { useContext, useEffect, useState } from "react";
 import Loader from "../Componets/Loader";
 import AddLeaveModel from "../Componets/AddLeaveModel";
-import { collectionId, databaceId, database, Query } from "../Appwrite/config";
-import { AuthContext } from "../Context/AuthContext";
-import { Navigate } from "react-router-dom";
+import {
+  account,
+  collectionId,
+  databaceId,
+  database,
+  Query,
+} from "../Appwrite/config";
 
 const Dashboard = () => {
-  const { user } = useContext(AuthContext);
   const [data, setData] = useState(null);
   useEffect(() => {
     const fetchData = async () => {
+      const user = await account.get();
+      console.log("featching data");
+      console.log(user);
       const leave = await database.listDocuments(databaceId, collectionId, [
         Query.equal("userId", user.email),
       ]);

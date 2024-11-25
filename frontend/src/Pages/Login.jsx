@@ -22,7 +22,7 @@ const Login = () => {
       console.log(response);
       setUser(response);
       toast.success("Login Successful");
-      <Navigate to="/dashboard" />;
+      <Navigate to="/" />;
     } catch (err) {
       console.log(err);
       toast.error("Login Failed" + err.message);

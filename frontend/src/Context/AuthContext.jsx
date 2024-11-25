@@ -14,6 +14,7 @@ export const AuthProvider = ({ children }) => {
   const reloadUser = async () => {
     const result = await account.get();
     console.log("result");
+    console.log(result);
     setUserState(result);
   };
 
